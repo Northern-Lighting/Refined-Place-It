@@ -1,16 +1,25 @@
-local function displayPlaceToolAction()
-    TheoTown.registerToolAction{
-        icon = Icon.SETTINGS,
-        name = TheoTown.translate("rpi_mainMenu_title"),
-        onClick = function ()
-            City.createDraftDrawer("$refined_place_it_00").select()
-            GUI.get("cmdCloseTool"):click()
-        end
+local function openIndexMenu()
+    GUI.get("cmdCloseTool"):click()
+    local indexToolDialog = GUI.createDialog{
+    icon = Icon.EYE,
+    title = TheoTown.translate("rpi_indexTool"),
+    closeable = true,
+    height = 200,
+    pause = true,
+    actions = {
+            {
+                icon = Icon.CANCEL,
+                text = Translation.control_cancel,
+                autoClose = true
+            }
+        }
     }
+
+    -- TODO: 搜索、添加到常用
 end
 
 function script:event(x, y, level, event, source)
     if event == Script.EVENT_TOOL_ENTER then
-        displayPlaceToolAction()
+        openIndexMenu()
     end
 end

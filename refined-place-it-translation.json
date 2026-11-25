@@ -19,7 +19,11 @@
       "rpi_general_reset": "重置位置",
       "rpi_general_toTheTop": "置于上层",
       "rpi_general_toTheBottom": "置于下层",
-      "rpi_general_move": "移动"
+      "rpi_general_move": "移动",
+      "rpi_general_adjustColor": "调整颜色",
+      "rpi_current_draft": "当前放置：",
+      "rpi_current_layer": "位于第 %d 层",
+      "rpi_general_changeTexture": "更改纹理"
     }
   }
 ]

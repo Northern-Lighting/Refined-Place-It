@@ -11,12 +11,42 @@ local function displayPlaceToolAction()
 
     TheoTown.registerToolAction{
         icon = Icon.REMOVE,
-        name = TheoTown.translate("rpi_general_remove") -- zh: 移除纹理
+        name = TheoTown.translate("rpi_general_remove"), -- zh: 移除纹理
+        onClick =function()
+            -- TODO: 接入函数，移除刚刚放置的纹理
+        end
     }
 
     TheoTown.registerToolAction{
         icon = Icon.RESET,
-        name = TheoTown.translate("rpi_general_reset") -- zh: 重置位置
+        name = TheoTown.translate("rpi_general_reset"), -- zh: 重置位置
+        onClick = function()
+            -- TODO: 接入函数，重置刚刚放置的纹理位置
+        end
+    }
+
+    TheoTown.registerToolAction{
+        icon = Icon.COLOR,
+        name = TheoTown.translate("rpi_general_adjustColor"), -- zh: 调整颜色
+        onClick = function()
+            GUI.showColorPicker{
+                r = 0,
+                g = 0,
+                b = 0,
+
+                -- TODO: onColor = 传出颜色，更改当前纹理的颜色，并记录下参数，下次在 editTool 中打开 colorPicker 时，默认值应该为已保存参数
+
+                title = TheoTown.translate("rpi_general_adjustColor")
+            }
+        end
+    }
+
+    TheoTown.registerToolAction{
+        icon = Icon.COPY,
+        name = TheoTown.translate("rpi_general_changeTexture"), -- zh: 更改纹理
+        onClick = function()
+            -- TODO: 返回纹理选择菜单
+        end
     }
 
     StartCapture, EndCapture = TheoTown.addUndoButton()

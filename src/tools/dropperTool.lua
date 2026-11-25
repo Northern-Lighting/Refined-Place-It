@@ -9,6 +9,8 @@ local function displayPlaceToolAction()
     }
 end
 
+-- TODO: 点击建筑后返回 Draft ID
+
 function script:event(x, y, level, event, source)
     if event == Script.EVENT_TOOL_ENTER then
         displayPlaceToolAction()
