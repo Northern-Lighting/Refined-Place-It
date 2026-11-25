@@ -30,7 +30,7 @@
     "meta": {
       "luawrapper": {
         "script": "src/tools/panel/ctrlPanel.lua",
-        "dev": true
+        "dev": false
       }
     }
   },
@@ -45,7 +45,7 @@
     "meta": {
       "luawrapper": {
         "script": "src/tools/panel/infoPanel.lua",
-        "dev": true
+        "dev": false
       }
     }
   },

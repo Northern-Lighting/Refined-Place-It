@@ -1,38 +1,25 @@
 local M = {}
 
-local panel
+local info
 
 function M.createInfoPanel()
     local root = GUI.getRoot()
 
-    local ClientH = GUI.getRoot():getClientHeight()
-    local ClientW = GUI.getRoot():getClientWidth()
+    info = root:addLabel{
+        x = 22,
+        y = 31,
 
-    local InfoPanel_W = 110
-    local InfoPanel_H = 50
+        font = Font.SMALL,
+        -- color = Color.WHITE,
 
-    local InfoPanel_X = ClientW / 2.0 - (InfoPanel_W / 2.0)
-    local InfoPanel_Y = 0
+        h = 10,
 
-    if root ~= nil then
-        panel = root:addPanel{
-            x = InfoPanel_X,
-            y = InfoPanel_Y,
-
-            w = InfoPanel_W,
-            h = InfoPanel_H
-        }
-
-        panel:addCanvas{
-            onDraw = function (self, x, y, w, h)
-                Drawing.drawNinePatch(NinePatch.INDICATOR, InfoPanel_X, InfoPanel_Y, InfoPanel_W, InfoPanel_H)
-            end
-        }
-    end
+        text = "当前放置："
+    }
 end
 
 function M.destroyInfoPanel()
-    panel:delete()
+    info:delete()
 end
 
 InfoPanel = M

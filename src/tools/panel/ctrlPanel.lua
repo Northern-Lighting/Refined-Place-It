@@ -5,13 +5,13 @@ local left, right, up, down
 local toTop, toBottom
 local lbl_toTheBottom, lbl_toTheTop
 
-local ClientH = GUI.getRoot():getClientHeight()
-local ClientW = GUI.getRoot():getClientWidth()
-
 local ShowLabelKey = false -- DEBUG USE
 
 function M.createCtrlAction()
     local root = GUI.getRoot()
+
+    local ClientH = root:getClientHeight()
+    local ClientW = root:getClientWidth()
 
     local UP_ICON = Draft.getFrame(
         assert(Draft.getDraft("$refined_place_it_icon_up00")), 1)
@@ -181,7 +181,7 @@ function M.destroyCtrlAction()
     toTop:delete()
     toBottom:delete()
 
-    if ShowLabelKey == true then
+    if (ShowLabelKey == true) then
         lbl_toTheBottom:delete()
         lbl_toTheTop:delete()
     end
