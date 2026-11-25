@@ -18,9 +18,7 @@ function M.createCtrlAction()
     local DOWN_ICON = Draft.getFrame(
         assert(Draft.getDraft("$refined_place_it_icon_down00")), 1)
     
-    -- 大概不可能是空的，但是这个编辑器一直叫我判空，好烦啊
-    if root ~= nil then
-        pxAdjustPanel = root:addPanel{
+    pxAdjustPanel = root:addPanel{
             x = 190,
             y = root:getClientHeight() - 20,
             w = 180,
@@ -168,8 +166,7 @@ function M.createCtrlAction()
             end,
         }
 
-        updateMoveValueLabel()
-    end
+    updateMoveValueLabel()
 end
 
 function M.destroyCtrlAction()

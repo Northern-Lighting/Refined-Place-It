@@ -23,7 +23,11 @@
       "rpi_general_adjustColor": "调整颜色",
       "rpi_current_draft": "当前放置：",
       "rpi_current_layer": "位于第 %d 层",
-      "rpi_general_changeTexture": "更改纹理"
+      "rpi_general_changeTexture": "更改纹理",
+      "rpi_dropperTool_continuePicker": "继续选择",
+      "rpi_dropperTool_currentItem": "当前选中了：",
+      "rpi_copy_2_clipboard": "已复制到剪贴板",
+      "rpi_dropperTool_history": "历史"
     }
   }
 ]

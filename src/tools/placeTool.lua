@@ -1,3 +1,26 @@
+local draftPickerDialog
+
+local function showDraftPickerDialog()
+    draftPickerDialog = GUI.createDialog{
+        icon = Icon.COPY,
+        title = "rpi_general_draftPicker_title",
+        text = "rpi_general_draftPicker_text",
+        closeable = true,
+        pause = true,
+        actions = {
+            {
+                icon = Icon.OK,
+                text = Translation.control_ok,
+                golden = true,
+                onClick = function ()
+                    -- TODO: 返回被选中的 Draft 里面的 
+                end,
+                autoClose = true
+            }
+        }
+    }
+end
+
 local function displayPlaceToolAction()
     -- Get Tool Action
     TheoTown.registerToolAction{
@@ -45,7 +68,7 @@ local function displayPlaceToolAction()
         icon = Icon.COPY,
         name = TheoTown.translate("rpi_general_changeTexture"), -- zh: 更改纹理
         onClick = function()
-            -- TODO: 返回纹理选择菜单
+            showDraftPickerDialog()
         end
     }
 
@@ -66,6 +89,9 @@ function script:event(x, y, level, event, source)
 
         -- Info Panel
         InfoPanel.createInfoPanel()
+
+        -- Draft Picker Dialog
+        showDraftPickerDialog()
     end
 
     if event == Script.EVENT_TOOL_LEAVE then

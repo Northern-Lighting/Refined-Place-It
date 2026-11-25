@@ -11,6 +11,14 @@ local function openIndexMenu()
                 icon = Icon.CANCEL,
                 text = Translation.control_cancel,
                 autoClose = true
+            },
+            {
+                icon = Icon.OK,
+                text = Translation.control_ok,
+                golden = true,
+                onClick = function ()
+                    -- TODO
+                end
             }
         }
     }
