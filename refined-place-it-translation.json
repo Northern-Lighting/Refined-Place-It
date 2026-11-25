@@ -1,0 +1,25 @@
+[
+  {
+    "id": "refined_place_it_00_translation",
+    "type": "translation",
+    "zh": {
+      "refined_place_it_00_title": "Refined Place It!",
+      "refined_place_it_00_text": "纹理位移工具 Place It! 的精简重构版\n作者：南环星云",
+      "rpi_mainMenu_title": "Place It! 菜单",
+      "rpi_mainMenu_text": "选择你要使用的工具 =w=",
+      "rpi_listCat_edit&placeTool": "放置与修改工具",
+      "rpi_placeTool": "纹理放置工具",
+      "rpi_editTool": "历史调整工具",
+      "rpi_editToolTitle": "选中一个建筑或道路调整来放置的纹理",
+      "rpi_listCat_index&dropperTool": "搜索与滴管工具",
+      "rpi_indexTool": "Draft 搜索工具",
+      "rpi_dropperTool": "滴管工具",
+      "rpi_toolAction_returnMenu": "返回菜单",
+      "rpi_general_remove": "移除纹理",
+      "rpi_general_reset": "重置位置",
+      "rpi_general_toTheTop": "置于上层",
+      "rpi_general_toTheBottom": "置于下层",
+      "rpi_general_move": "移动"
+    }
+  }
+]

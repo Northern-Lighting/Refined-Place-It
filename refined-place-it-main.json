@@ -1,0 +1,131 @@
+[
+  {
+    "id": "$refined_place_it_icon_up00",
+    "type": "animation",
+    "frames": [
+      {"bmp": "textures/icons/up.png"}
+    ],
+    "hidden": true,
+    "index": false,
+    "final": true
+  },
+  {
+    "id": "$refined_place_it_icon_down00",
+    "type": "animation",
+    "frames": [
+      {"bmp": "textures/icons/down.png"}
+    ],
+    "hidden": true,
+    "index": false,
+    "final": true
+  },
+  {
+    "id": "$refined_place_it_ctrl_panel_script00",
+    "type": "script",
+    "script": "#LuaWrapper",
+    "strict lua": true,
+    "hidden": true,
+    "index": false,
+    "final": true,
+    "meta": {
+      "luawrapper": {
+        "script": "src/tools/panel/ctrlPanel.lua",
+        "dev": true
+      }
+    }
+  },
+  {
+    "id": "$refined_place_it_info_panel_script00",
+    "type": "script",
+    "script": "#LuaWrapper",
+    "strict lua": true,
+    "hidden": true,
+    "index": false,
+    "final": true,
+    "meta": {
+      "luawrapper": {
+        "script": "src/tools/panel/infoPanel.lua",
+        "dev": true
+      }
+    }
+  },
+  {
+    "id": "$refined_place_it_00",
+    "type": "tool",
+    "preview frames": [{"bmp":"textures/icons/icon.png"}],
+    "title id": "refined_place_it_00_title",
+    "text id": "refined_place_it_00_text",
+    "category": "$cat_terrain00",
+    "script": "#LuaWrapper",
+    "meta": {
+      "luawrapper": {
+        "script": "src/main.lua",
+        "dev": true
+      }
+    }
+  },
+  {
+    "id": "$refined_place_it_00_placeTool",
+    "type": "tool",
+    "title id": "rpi_placeTool",
+    "text id": "rpi_placeTool",
+    "hidden": true,
+    "index": false,
+    "script": "#LuaWrapper",
+    "meta": {
+      "luawrapper": {
+        "script": "src/tools/placeTool.lua",
+        "dev": true
+      }
+    },
+    "frames": [null]
+  },
+  {
+    "id": "$refined_place_it_00_editTool",
+    "type": "tool",
+    "title id": "rpi_editToolTitle",
+    "text id": "rpi_editTool",
+    "hidden": true,
+    "index": false,
+    "script": "#LuaWrapper",
+    "meta": {
+      "luawrapper": {
+        "script": "src/tools/editTool.lua",
+        "dev": true
+      }
+    },
+    "frames": [null]
+  },
+  {
+    "id": "$refined_place_it_00_indexTool",
+    "type": "tool",
+    "title id": "rpi_indexTool",
+    "text id": "rpi_indexTool",
+    "hidden": true,
+    "index": false,
+    "script": "#LuaWrapper",
+    "meta": {
+      "luawrapper": {
+        "script": "src/tools/indexTool.lua",
+        "dev": true
+      }
+    },
+    "frames": [null]
+  },
+  {
+    "id": "$refined_place_it_00_dropperTool",
+    "type": "tool",
+    "title id": "rpi_dropperTool",
+    "text id": "rpi_dropperTool",
+    "hidden": true,
+    "index": false,
+    "script": "#LuaWrapper",
+    "meta": {
+      "luawrapper": {
+        "script": "src/tools/dropperTool.lua",
+        "dev": true
+      }
+    },
+    "frames": [null]
+  }
+]
