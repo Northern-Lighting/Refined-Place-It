@@ -1,8 +1,5 @@
 local M = {}
 
-local WHITE = 255
-local RED = 0
-
 local activeToolId
 local targetX
 local targetY
@@ -27,14 +24,14 @@ local function drawTarget()
     end
 
     if hasTarget(targetX, targetY) then
-        Drawing.setColor(WHITE, WHITE, WHITE)
+        Drawing.setColor(255, 255, 255)
     else
-        Drawing.setColor(WHITE, RED, RED)
+        Drawing.setColor(255, 0, 0)
     end
 
     Drawing.setTile(targetX, targetY)
     Drawing.drawTileFrame(Icon.TOOLMARK_BLOB)
-    Drawing.setColor(WHITE, WHITE, WHITE)
+    Drawing.setColor(255, 255, 255)
 end
 
 function M.activate(toolId)
