@@ -23,6 +23,13 @@ local function drawTarget()
         return
     end
 
+    local restoreScaleX, restoreScaleY = Drawing.getScale()
+    local restoreR, restoreG, restoreB = Drawing.getColor()
+    local restoreAlpha = Drawing.getAlpha()
+    local restoreAdditive = Drawing.getAdditive()
+
+    Drawing.setAdditive(0)
+
     if hasTarget(targetX, targetY) then
         Drawing.setColor(255, 255, 255)
     else
@@ -31,7 +38,10 @@ local function drawTarget()
 
     Drawing.setTile(targetX, targetY)
     Drawing.drawTileFrame(Icon.TOOLMARK_BLOB)
-    Drawing.setColor(255, 255, 255)
+    Drawing.setScale(restoreScaleX, restoreScaleY)
+    Drawing.setColor(restoreR, restoreG, restoreB)
+    Drawing.setAlpha(restoreAlpha)
+    Drawing.setAdditive(restoreAdditive)
 end
 
 function M.activate(toolId)

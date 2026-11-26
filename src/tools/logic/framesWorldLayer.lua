@@ -204,8 +204,13 @@ local function drawBucket(bucket, anchorX, anchorY)
     end
 
     local restoreScaleX, restoreScaleY = Drawing.getScale()
+    local restoreR, restoreG, restoreB = Drawing.getColor()
+    local restoreAlpha = Drawing.getAlpha()
+    local restoreAdditive = Drawing.getAdditive()
     local drawR, drawG, drawB = getDaytimeMultiplier()
     local rotation = math.floor(tonumber(City.getRotation()) or 0) % 4
+
+    Drawing.setAdditive(0)
 
     for _, item in ipairs(bucket) do
         local frame = resolveLiveFrame(item.draftId, item.frameIndex)
@@ -249,9 +254,9 @@ local function drawBucket(bucket, anchorX, anchorY)
     end
 
     Drawing.setScale(restoreScaleX, restoreScaleY)
-    Drawing.setColor(255, 255, 255)
-    Drawing.setAlpha(1)
-    Drawing.setAdditive(0)
+    Drawing.setColor(restoreR, restoreG, restoreB)
+    Drawing.setAlpha(restoreAlpha)
+    Drawing.setAdditive(restoreAdditive)
 end
 
 function script:draw(x, y, level)
