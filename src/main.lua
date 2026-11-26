@@ -9,6 +9,12 @@ local function openMainMenu()
         height = 289,
         actions = {
             {
+                icon = Icon.WIZARD,
+                onClick = function ()
+                    -- TODO: 使用向导
+                end
+            },
+            {
                 icon = Icon.CANCEL,
                 text = Translation.control_cancel,
                 autoClose = true

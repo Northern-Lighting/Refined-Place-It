@@ -1,6 +1,10 @@
+local M = {}
+
 local afterClick
 local getDropperHistory
 local pendingDraftId
+local DEFAULT_DROPPER_TOOL_ID = "$refined_place_it_00_dropperTool"
+local TOOL_ID = "$refined_place_it_00_dropperTool"
 
 local function displayPlaceToolAction()
     TheoTown.registerToolAction{
@@ -27,7 +31,9 @@ local DROPPER_HISTORY_KEY = "$refined_place_it_dropper_history"
 
 getDropperHistory = function()
     local storage = Util.optStorage(City.getStorage(), DROPPER_HISTORY_KEY)
+
     storage.ids = storage.ids or {}
+    
     return storage.ids
 end
 
@@ -60,13 +66,28 @@ local function getTopRoadDraft(x, y)
     return topRoadDraft
 end
 
-afterClick = function()
-    local dropperToolGUI = GUI.createDialog{
-        icon = Icon.EYE_DROPPER,
-        closeable = true,
-        pause = true,
-        title = TheoTown.translate("rpi_dropperTool"),
-        text = TheoTown.translate("rpi_dropperTool_currentItem"),
+afterClick = function(returnToPlaceTool, parent)
+    local actions
+    local dropperToolGUI
+    local selectionMode = returnToPlaceTool and
+        parent ~= nil and
+        parent.textField ~= nil and
+        parent.preview ~= nil
+    local returnToolId = parent and parent.returnToolId or
+        DEFAULT_DROPPER_TOOL_ID
+
+    if returnToPlaceTool then
+        actions = {
+            {
+                icon = Icon.BACKWARD,
+                text = TheoTown.translate("rpi_toolAction_return"),
+                onClick = function ()
+                    dropperToolGUI:close()
+                    City.createDraftDrawer(returnToolId, true).select()
+                end
+            }
+        }
+    else
         actions = {
             {
                 icon = Icon.BACKWARD,
@@ -81,7 +102,16 @@ afterClick = function()
                 golden = true,
                 autoClose = true
             }
-        },
+        }
+    end
+
+    dropperToolGUI = GUI.createDialog{
+        icon = Icon.EYE_DROPPER,
+        closeable = true,
+        pause = true,
+        title = TheoTown.translate("rpi_dropperTool"),
+        text = TheoTown.translate("rpi_dropperTool_currentItem"),
+        actions = actions,
         h = 280
     }
 
@@ -133,19 +163,44 @@ afterClick = function()
                 width = 30,
                 icon = Icon.STAR,
                 onClick = function ()
-                    -- TODO: 添加到最爱
+                    if FavoriteDialog.addFavorite(historyDraftId) then
+                        Debug.toast("已添加到收藏")
+                    end
                 end
             }
         end
     end
 
     local dropperToolGUI_copy2Clipboard = dropperToolGUI.content:addButton{
-        icon = Icon.COPY,
+        icon = selectionMode and Icon.OK or Icon.COPY,
         x = -40,
         y = 20,
         h = 30,
         w = 20,
         onClick = function()
+            if selectionMode then
+                local draft = Draft.getDraft(dropperToolGUI_textField:getText())
+
+                if draft == nil then
+                    Debug.toast(TheoTown.translate("rpi_draft_invalid"))
+                    return
+                end
+
+                FavoriteDialog.applyDraftSelection(
+                    parent.textField,
+                    parent.preview,
+                    draft:getId()
+                )
+
+                dropperToolGUI:close()
+
+                if parent.onDraftSelected ~= nil then
+                    parent.onDraftSelected(draft:getId())
+                end
+
+                return
+            end
+
             Runtime.setClipboard(dropperToolGUI_textField:getText())
             Debug.toast(TheoTown.translate("rpi_copy_2_clipboard"))
         end
@@ -166,22 +221,12 @@ function script:click(x, y)
     afterClick()
 end
 
--- Red Dot and White Dot
 function script:draw(tileX, tileY, hoverX, hoverY)
-    if tileX ~= hoverX or tileY ~= hoverY then
-        return
-    end
+    DotPreview.track(TOOL_ID, tileX, tileY, hoverX, hoverY)
+end
 
-    if Tile.getBuildingDraft(tileX, tileY) ~= nil
-        or getTopRoadDraft(tileX, tileY) ~= nil then
-        Drawing.setColor(255, 255, 255)
-    else
-        Drawing.setColor(255, 0, 0)
-    end
-
-    Drawing.setTile(tileX, tileY)
-    Drawing.drawTileFrame(Icon.TOOLMARK_BLOB)
-    Drawing.setColor(255, 255, 255)
+function script:drawCity()
+    DotPreview.drawCity(TOOL_ID)
 end
 
 -- History Storage
@@ -192,10 +237,28 @@ end
 
 function script:event(x, y, level, event, source)
     if event == Script.EVENT_TOOL_ENTER then
+        DotPreview.activate(TOOL_ID)
+
         -- Tool Icon Get
         local draft = assert(Draft.getDraft("$refined_place_it_00_dropperTool"))
         Draft.setFrame(draft, 1, Icon.EYE_DROPPER)
 
         displayPlaceToolAction()
     end
+
+    if event == Script.EVENT_TOOL_LEAVE then
+        DotPreview.deactivate(TOOL_ID)
+    end
 end
+
+function M.back2DropperRecordDialog(parent)
+    pendingDraftId = pendingDraftId or getDropperHistory()[1]
+    afterClick(true, parent)
+end
+
+function M.getLatestDraftId()
+    return pendingDraftId or getDropperHistory()[1]
+end
+
+DropperToolLink = M
+return M

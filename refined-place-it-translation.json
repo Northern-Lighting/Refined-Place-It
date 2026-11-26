@@ -15,6 +15,7 @@
       "rpi_indexTool": "Draft 搜索工具",
       "rpi_dropperTool": "滴管工具",
       "rpi_toolAction_returnMenu": "返回菜单",
+      "rpi_toolAction_return": "返回",
       "rpi_general_remove": "移除纹理",
       "rpi_general_reset": "重置位置",
       "rpi_general_toTheTop": "置于上层",
@@ -27,7 +28,19 @@
       "rpi_dropperTool_continuePicker": "继续选择",
       "rpi_dropperTool_currentItem": "当前选中了：",
       "rpi_copy_2_clipboard": "已复制到剪贴板",
-      "rpi_dropperTool_history": "历史"
+      "rpi_dropperTool_history": "历史",
+      "rpi_general_draftPicker_title": "选择 Draft",
+      "rpi_general_draftPicker_text": "在这里选择你要放置的 Draft 对应的 Frame",
+      "rpi_history_record": "从历史记录中选择",
+      "rpi_history_dropper_record": "从滴管记录中选择",
+      "rpi_favorite_to": "查看收藏",
+      "rpi_favorite_title": "收藏",
+      "rpi_favorite_text": "收藏的 Draft（最多只能存 50 条哦）",
+      "rpi_favorite_empty": "暂无收藏",
+      "rpi_draft_invalid": "请选择一个有效的 Draft",
+      "rpi_frame_label": "Frame",
+      "rpi_next": "下一页",
+      "rpi_previous": "上一页"
     }
   }
 ]

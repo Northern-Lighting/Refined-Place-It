@@ -50,6 +50,36 @@
     }
   },
   {
+    "id": "$refined_place_it_favorite_script00",
+    "type": "script",
+    "script": "#LuaWrapper",
+    "strict lua": true,
+    "hidden": true,
+    "index": false,
+    "final": true,
+    "meta": {
+      "luawrapper": {
+        "script": "src/tools/panel/favoriteDialog.lua",
+        "dev": false
+      }
+    }
+  },
+  {
+    "id": "$refined_place_it_dot_preview_script00",
+    "type": "script",
+    "script": "#LuaWrapper",
+    "strict lua": true,
+    "hidden": true,
+    "index": false,
+    "final": true,
+    "meta": {
+      "luawrapper": {
+        "script": "src/tools/logic/dotPreview.lua",
+        "dev": false
+      }
+    }
+  },
+  {
     "id": "$refined_place_it_00",
     "type": "tool",
     "preview frames": [{"bmp":"textures/icons/icon.png"}],

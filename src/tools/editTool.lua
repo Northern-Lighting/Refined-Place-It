@@ -1,3 +1,5 @@
+local TOOL_ID = "$refined_place_it_00_editTool"
+
 local function displayEditToolAction()
     -- Get Tool Action
     TheoTown.registerToolAction{
@@ -22,8 +24,17 @@ local function displayEditToolAction()
     StartCapture, EndCapture = TheoTown.addUndoButton()
 end
 
+function script:draw(tileX, tileY, hoverX, hoverY)
+    DotPreview.track(TOOL_ID, tileX, tileY, hoverX, hoverY)
+end
+
+function script:drawCity()
+    DotPreview.drawCity(TOOL_ID)
+end
+
 function script:event(x, y, level, event, source)
     if event == Script.EVENT_TOOL_ENTER then
+        DotPreview.activate(TOOL_ID)
 
         -- Tool Icon Get
         local draft = assert(Draft.getDraft("$refined_place_it_00_editTool"))
@@ -37,6 +48,7 @@ function script:event(x, y, level, event, source)
     end
 
     if event == Script.EVENT_TOOL_LEAVE then
+        DotPreview.deactivate(TOOL_ID)
         CtrlPanel.destroyCtrlAction()
     end
 end
