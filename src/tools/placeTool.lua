@@ -7,6 +7,42 @@ local draftFrameOwnerId
 local draftFrameItems
 local draftFrameListDraftId
 local TOOL_ID = "$refined_place_it_00_placeTool"
+local selectedDraftId
+local selectedDraftFrameIndex = 1
+local selectedLayer = 1
+local lastPlacedItem
+local StartCapture
+local EndCapture
+
+local function beginCapture(x, y)
+    if StartCapture ~= nil then
+        StartCapture(x, y, x, y, x, y)
+    end
+end
+
+local function endCapture()
+    if EndCapture ~= nil then
+        EndCapture()
+    end
+end
+
+local function clampLayer(layer)
+    return math.max(
+        FramesPlaceAndStorage.MIN_LAYER,
+        math.min(
+            FramesPlaceAndStorage.MAX_LAYER,
+            math.floor(tonumber(layer) or 1)
+        )
+    )
+end
+
+local function updateInfoPanel()
+    InfoPanel.setCurrentDraft(
+        selectedDraftId,
+        selectedDraftFrameIndex
+    )
+    InfoPanel.setCurrentLayer(selectedLayer)
+end
 
 local function clearDraftFrameItems()
     for i = #draftFrameItems, 1, -1 do
@@ -25,6 +61,8 @@ local function populateDraftFrameList(draftId)
     clearDraftFrameItems()
 
     selectedDraftFrame = nil
+    selectedDraftId = nil
+    selectedDraftFrameIndex = 1
     draftFrameOwnerId = nil
     draftPreview:setIcon(Icon.REGION_SHOW)
 
@@ -67,8 +105,11 @@ local function populateDraftFrameList(draftId)
                 listboxSelectable = true,
                 onClick = function ()
                     selectedDraftFrame = frame
+                    selectedDraftId = draftId
+                    selectedDraftFrameIndex = frameIndex
                     draftFrameOwnerId = draftId
                     draftPreview:setIcon(frame)
+                    updateInfoPanel()
                 end
             }
             draftFrameItems:add(item)
@@ -89,8 +130,11 @@ local function populateDraftFrameList(draftId)
 
             if selectedDraftFrame == nil then
                 selectedDraftFrame = frame
+                selectedDraftId = draftId
+                selectedDraftFrameIndex = frameIndex
                 draftFrameOwnerId = draftId
                 draftPreview:setIcon(frame)
+                updateInfoPanel()
             end
         end
     end
@@ -106,10 +150,13 @@ local function getSelectedDraftFrame()
     end
 
     if draftFrameOwnerId == draft:getId() and selectedDraftFrame ~= nil then
-        return selectedDraftFrame
+        return
+            selectedDraftFrame,
+            selectedDraftId or draft:getId(),
+            selectedDraftFrameIndex
     end
 
-    return firstFrame
+    return firstFrame, draft:getId(), 1
 end
 
 local function applyExternalDraftSelection(draftId)
@@ -119,6 +166,8 @@ end
 
 local function showDraftPickerDialog()
     selectedDraftFrame = nil
+    selectedDraftId = nil
+    selectedDraftFrameIndex = 1
     draftFrameOwnerId = nil
     draftFrameItems = Array()
     draftFrameListDraftId = false
@@ -166,7 +215,8 @@ local function showDraftPickerDialog()
                 text = Translation.control_ok,
                 golden = true,
                 onClick = function ()
-                    local frame = getSelectedDraftFrame()
+                    local frame, draftId, frameIndex =
+                        getSelectedDraftFrame()
 
                     if frame == nil then
                         Debug.toast(TheoTown.translate("rpi_draft_invalid"))
@@ -174,7 +224,10 @@ local function showDraftPickerDialog()
                     end
 
                     selectedDraftFrame = frame
+                    selectedDraftId = draftId
+                    selectedDraftFrameIndex = frameIndex
                     draftPreview:setIcon(frame)
+                    updateInfoPanel()
                     draftPickerDialog:close()
                 end,
                 autoClose = false
@@ -216,6 +269,64 @@ local function showDraftPickerDialog()
     populateDraftFrameList(draftTextField:getText())
 end
 
+local function getOperableItem()
+    local item = lastPlacedItem
+
+    if item ~= nil then
+        item = FramesPlaceAndStorage.getItem(item.id)
+    end
+
+    if item == nil then
+        item = FramesPlaceAndStorage.getLast()
+    end
+
+    lastPlacedItem = item
+    return item
+end
+
+local function withCapture(item, action)
+    if item == nil then
+        return nil
+    end
+
+    beginCapture(item.x, item.y)
+    local result = action(item)
+    endCapture()
+
+    return result
+end
+
+local function moveOperableItem(dx, dy)
+    local item = getOperableItem()
+
+    if item == nil then
+        Debug.toast(TheoTown.translate("rpi_toast_nothing_placed"))
+        return
+    end
+
+    withCapture(item, function (target)
+        FramesPlaceAndStorage.move(target.id, dx, dy)
+    end)
+end
+
+local function changeOperableLayer(delta)
+    local item = getOperableItem()
+
+    if item == nil then
+        selectedLayer = clampLayer(selectedLayer + delta)
+    else
+        local updated = withCapture(item, function (target)
+            return FramesPlaceAndStorage.shiftLayer(target.id, delta)
+        end)
+
+        if updated ~= nil then
+            selectedLayer = updated.zOrder
+        end
+    end
+
+    updateInfoPanel()
+end
+
 
 
 local function displayPlaceToolAction()
@@ -233,7 +344,17 @@ local function displayPlaceToolAction()
         icon = Icon.REMOVE,
         name = TheoTown.translate("rpi_general_remove"), -- zh: 移除纹理
         onClick =function()
-            -- TODO: 接入函数，移除刚刚放置的纹理，注意：不打开 Dialog
+            local item = getOperableItem()
+            if item == nil then
+                Debug.toast(TheoTown.translate("rpi_toast_nothing_placed"))
+                return
+            end
+
+            withCapture(item, function (target)
+                FramesPlaceAndStorage.remove(target.id)
+            end)
+            lastPlacedItem = nil
+            updateInfoPanel()
         end
     }
 
@@ -241,7 +362,20 @@ local function displayPlaceToolAction()
         icon = Icon.RESET,
         name = TheoTown.translate("rpi_general_reset"), -- zh: 重置位置
         onClick = function()
-            -- TODO: 接入函数，重置刚刚放置的纹理位置
+            local item = getOperableItem()
+            if item == nil then
+                Debug.toast(TheoTown.translate("rpi_toast_nothing_placed"))
+                return
+            end
+
+            local updated = withCapture(item, function (target)
+                return FramesPlaceAndStorage.reset(target.id)
+            end)
+
+            if updated ~= nil then
+                selectedLayer = updated.zOrder
+                updateInfoPanel()
+            end
         end
     }
 
@@ -249,13 +383,21 @@ local function displayPlaceToolAction()
         icon = Icon.COLOR,
         name = TheoTown.translate("rpi_general_adjustColor"), -- zh: 调整颜色
         onClick = function()
+            local item = getOperableItem()
+            if item == nil then
+                Debug.toast(TheoTown.translate("rpi_toast_nothing_placed"))
+                return
+            end
+
             GUI.showColorPicker{
-                r = 0,
-                g = 0,
-                b = 0,
-
-                -- TODO: onColor = 传出颜色，更改当前纹理的颜色，并记录下参数，下次在 editTool 中打开 colorPicker 时，默认值应该为已保存参数
-
+                r = item.tintR or 255,
+                g = item.tintG or 255,
+                b = item.tintB or 255,
+                onColor = function (r, g, b)
+                    withCapture(item, function (target)
+                        FramesPlaceAndStorage.setColor(target.id, r, g, b)
+                    end)
+                end,
                 title = TheoTown.translate("rpi_general_adjustColor")
             }
         end
@@ -270,7 +412,10 @@ local function displayPlaceToolAction()
     }
 
     StartCapture, EndCapture = TheoTown.addUndoButton()
-    -- TODO: 接入撤回和恢复操作，这是官方的撤回和恢复按钮
+end
+
+function script:lateInit()
+    FramesPlaceAndStorage.installWorldLayer()
 end
 
 function script:draw(tileX, tileY, hoverX, hoverY)
@@ -279,6 +424,43 @@ end
 
 function script:drawCity()
     DotPreview.drawCity(TOOL_ID)
+end
+
+function script:click(x, y)
+    local _, draftId, frameIndex = getSelectedDraftFrame()
+
+    if draftId == nil then
+        Debug.toast(TheoTown.translate("rpi_draft_invalid"))
+        return false
+    end
+
+    beginCapture(x, y)
+    local item, reason = FramesPlaceAndStorage.add(
+        draftId,
+        frameIndex,
+        x,
+        y,
+        0,
+        {
+            layer = selectedLayer,
+        }
+    )
+    endCapture()
+
+    if item == nil then
+        if reason == "building_limit" then
+            Debug.toast(TheoTown.translate("rpi_toast_building_limit"))
+        else
+            Debug.toast(TheoTown.translate("rpi_toast_no_target"))
+        end
+        return false
+    end
+
+    lastPlacedItem = item
+    selectedLayer = item.zOrder
+    updateInfoPanel()
+
+    return false
 end
 
 function script:event(x, y, level, event, source)
@@ -293,13 +475,17 @@ function script:event(x, y, level, event, source)
         displayPlaceToolAction()
 
         -- Control Actions
-        CtrlPanel.createCtrlAction()
+        CtrlPanel.createCtrlAction{
+            onMove = moveOperableItem,
+            onLayerChange = changeOperableLayer,
+        }
 
         -- Info Panel
         InfoPanel.createInfoPanel()
 
         -- Draft Picker Dialog
         showDraftPickerDialog()
+        updateInfoPanel()
     end
 
     if event == Script.EVENT_TOOL_LEAVE then

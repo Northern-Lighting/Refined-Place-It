@@ -4,10 +4,13 @@ local pxAdjustPanel
 local left, right, up, down
 local toTop, toBottom
 local lbl_toTheBottom, lbl_toTheTop
+local sliderValue = 1
 
 local ShowLabelKey = false -- DEBUG USE
 
-function M.createCtrlAction()
+function M.createCtrlAction(options)
+    options = options or {}
+    local callbacks = options
     local root = GUI.getRoot()
 
     local ClientH = root:getClientHeight()
@@ -42,7 +45,12 @@ function M.createCtrlAction()
             h = 30,
             icon = Icon.PREVIOUS,
             frameDefault = NinePatch.BLUE_BUTTON,
-            frameDown = NinePatch.BLUE_BUTTON_PRESSED
+            frameDown = NinePatch.BLUE_BUTTON_PRESSED,
+            onClick = function ()
+                if callbacks.onMove ~= nil then
+                    callbacks.onMove(-sliderValue, 0)
+                end
+            end
         }
 
         right = root:addButton{
@@ -52,7 +60,12 @@ function M.createCtrlAction()
             h = 30,
             icon = Icon.NEXT,
             frameDefault = NinePatch.BLUE_BUTTON,
-            frameDown = NinePatch.BLUE_BUTTON_PRESSED
+            frameDown = NinePatch.BLUE_BUTTON_PRESSED,
+            onClick = function ()
+                if callbacks.onMove ~= nil then
+                    callbacks.onMove(sliderValue, 0)
+                end
+            end
         }
 
         up = root:addButton{
@@ -62,7 +75,12 @@ function M.createCtrlAction()
             h = 30,
             icon = UP_ICON,
             frameDefault = NinePatch.BLUE_BUTTON,
-            frameDown = NinePatch.BLUE_BUTTON_PRESSED
+            frameDown = NinePatch.BLUE_BUTTON_PRESSED,
+            onClick = function ()
+                if callbacks.onMove ~= nil then
+                    callbacks.onMove(0, -sliderValue)
+                end
+            end
         }
 
         down = root:addButton{
@@ -72,7 +90,12 @@ function M.createCtrlAction()
             h = 30,
             icon = DOWN_ICON,
             frameDefault = NinePatch.BLUE_BUTTON,
-            frameDown = NinePatch.BLUE_BUTTON_PRESSED
+            frameDown = NinePatch.BLUE_BUTTON_PRESSED,
+            onClick = function ()
+                if callbacks.onMove ~= nil then
+                    callbacks.onMove(0, sliderValue)
+                end
+            end
         }
 
         toTop = root:addButton{
@@ -82,7 +105,12 @@ function M.createCtrlAction()
             h = 30,
             icon = Icon.PLUS,
             frameDefault = NinePatch.BLUE_BUTTON,
-            frameDown = NinePatch.BLUE_BUTTON_PRESSED
+            frameDown = NinePatch.BLUE_BUTTON_PRESSED,
+            onClick = function ()
+                if callbacks.onLayerChange ~= nil then
+                    callbacks.onLayerChange(1)
+                end
+            end
         }
 
         toBottom = root:addButton{
@@ -92,7 +120,12 @@ function M.createCtrlAction()
             h = 30,
             icon = Icon.MINUS,
             frameDefault = NinePatch.BLUE_BUTTON,
-            frameDown = NinePatch.BLUE_BUTTON_PRESSED
+            frameDown = NinePatch.BLUE_BUTTON_PRESSED,
+            onClick = function ()
+                if callbacks.onLayerChange ~= nil then
+                    callbacks.onLayerChange(-1)
+                end
+            end
         }
 
         if (ShowLabelKey == true) then
@@ -120,7 +153,6 @@ function M.createCtrlAction()
         end
 
         -- Slider: From 1 to 20 px, affect texture's moving distance
-        local sliderValue = 1
         local moveValueLabel
 
         local function updateMoveValueLabel()
@@ -170,20 +202,29 @@ function M.createCtrlAction()
 end
 
 function M.destroyCtrlAction()
-    left:delete()
-    right:delete()
-    up:delete()
-    down:delete()
+    if left ~= nil then left:delete() end
+    if right ~= nil then right:delete() end
+    if up ~= nil then up:delete() end
+    if down ~= nil then down:delete() end
+    if toTop ~= nil then toTop:delete() end
+    if toBottom ~= nil then toBottom:delete() end
 
-    toTop:delete()
-    toBottom:delete()
-
-    if (ShowLabelKey == true) then
-        lbl_toTheBottom:delete()
-        lbl_toTheTop:delete()
+    if ShowLabelKey then
+        if lbl_toTheBottom ~= nil then lbl_toTheBottom:delete() end
+        if lbl_toTheTop ~= nil then lbl_toTheTop:delete() end
     end
-    
-    pxAdjustPanel:delete()
+
+    if pxAdjustPanel ~= nil then pxAdjustPanel:delete() end
+
+    left = nil
+    right = nil
+    up = nil
+    down = nil
+    toTop = nil
+    toBottom = nil
+    lbl_toTheBottom = nil
+    lbl_toTheTop = nil
+    pxAdjustPanel = nil
 end
 
 CtrlPanel = M
