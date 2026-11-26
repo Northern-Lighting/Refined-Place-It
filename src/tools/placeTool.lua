@@ -233,7 +233,7 @@ local function displayPlaceToolAction()
         icon = Icon.REMOVE,
         name = TheoTown.translate("rpi_general_remove"), -- zh: 移除纹理
         onClick =function()
-            -- TODO: 接入函数，移除刚刚放置的纹理
+            -- TODO: 接入函数，移除刚刚放置的纹理，注意：不打开 Dialog
         end
     }
 
@@ -270,6 +270,7 @@ local function displayPlaceToolAction()
     }
 
     StartCapture, EndCapture = TheoTown.addUndoButton()
+    -- TODO: 接入撤回和恢复操作，这是官方的撤回和恢复按钮
 end
 
 function script:draw(tileX, tileY, hoverX, hoverY)

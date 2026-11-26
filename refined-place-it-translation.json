@@ -40,7 +40,8 @@
       "rpi_draft_invalid": "请选择一个有效的 Draft",
       "rpi_frame_label": "Frame",
       "rpi_next": "下一页",
-      "rpi_previous": "上一页"
+      "rpi_previous": "上一页",
+      "rpi_editTool_remove": "移除或更改放置在此建筑上的纹理"
     }
   }
 ]
